@@ -1,0 +1,48 @@
+﻿/* فایل: user_list.css */
+
+body {
+    background-color: #f8f9fa;
+}
+
+h1.display-4 {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #343a40;
+}
+
+.user-table th, .user-table td {
+    text-align: center;
+    vertical-align: middle;
+}
+
+.user-table thead th {
+    background-color: #343a40;
+    color: #ffffff;
+}
+
+.btn-outline-success, .btn-outline-danger {
+    width: 80px;
+    margin: 2px 0;
+}
+
+@media (max-width: 576px) {
+    .btn-outline-success, .btn-outline-danger {
+        width: 100%;
+        margin-bottom: 5px;
+    }
+}
+
+.pagination {
+    margin-top: 20px;
+}
+
+.pagination a {
+    margin: 0 5px;
+    text-decoration: none;
+    color: #007bff;
+}
+
+.pagination .current {
+    font-weight: bold;
+    color: #000;
+}

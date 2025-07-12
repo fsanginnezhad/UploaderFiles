@@ -1,0 +1,98 @@
+{% extends "main.html" %}
+{% load static %}
+{% block title %}ویرایش کاربر{% endblock %}
+{% block style %}
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{% static 'accounts/css/edit_user.css' %}">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .edit-user-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .edit-user-container h1 {
+            font-size: 28px;
+            font-weight: bold;
+            color: #343a40;
+            margin-bottom: 30px;
+        }
+
+        .form-group label {
+            font-weight: 600;
+        }
+
+        .form-control {
+            border-radius: 5px;
+            height: 45px;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border: none;
+            width: 100%;
+            padding: 12px;
+            font-size: 18px;
+            border-radius: 5px;
+        }
+
+        .btn-secondary {
+            width: 100%;
+            padding: 12px;
+            font-size: 18px;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+
+        .btn-secondary:hover {
+            background-color: #6c757d;
+            color: #ffffff;
+        }
+
+        @media (max-width: 576px) {
+            .edit-user-container {
+                padding: 20px;
+            }
+
+            .edit-user-container h1 {
+                font-size: 24px;
+            }
+
+            .btn-primary, .btn-secondary {
+                font-size: 16px;
+                padding: 10px;
+            }
+        }
+    </style>
+{% endblock %}
+{% block content %}
+<div class="container mt-5 mb-5">
+    <div class="edit-user-container">
+        <h1 class="text-center">ویرایش کاربر</h1>
+        <form method="post">
+            {% csrf_token %}
+            {% for field in form %}
+                <div class="form-group">
+                    {{ field.label_tag }}
+                    {{ field }}
+                    {% if field.help_text %}
+                        <small class="form-text text-muted">{{ field.help_text }}</small>
+                    {% endif %}
+                    {% for error in field.errors %}
+                        <small class="text-danger">{{ error }}</small>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+            <button type="submit" class="btn btn-primary">ذخیره تغییرات</button>
+            <a href="{% url 'filemanager:user_list' %}" class="btn btn-secondary">بازگشت</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

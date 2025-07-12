@@ -1,0 +1,61 @@
+﻿{% extends "main.html" %}
+{% load static %}
+{% block title %}صفحه ادمین{% endblock %}
+{% block style %}
+    <link rel="stylesheet" href="{% static 'accounts/css/admin_page.css' %}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+{% endblock %}
+{% block content %}
+<div class="container mt-5">
+    <h1 class="text-center">ساخت کاربر جدید</h1>
+    {% if messages %}
+        <div class="alert alert-info">
+            {% for message in messages %}
+                <p>{{ message }}</p>
+            {% endfor %}
+        </div>
+    {% endif %}
+    <form method="post" class="mt-4">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="username">کابر جدید:</label>
+            <input type="text" class="form-control" name="username" required>
+        </div>
+        <div class="form-group">
+            <label for="password">رمز عبور جدید:</label>
+            <input type="password" class="form-control" name="password" required>
+        </div>
+        <button type="submit" class="btn btn-primary">ساخت کاربر</button>
+    </form>
+    <br>
+    <ul class="list-group">
+        {% for folder in page_obj %}
+            <li class="list-group-item">
+                <strong>{{ folder }}</strong>
+            </li>
+        {% endfor %}
+    </ul>
+    <div class="pagination">
+    <span class="step-links">
+        {% if page_obj.has_previous %}
+            <a href="?page=1">&laquo; اول</a>
+            <a href="?page={{ page_obj.previous_page_number }}">قبلی</a>
+        {% endif %}
+
+        <span class="current">
+            صفحه {{ page_obj.number }} از {{ page_obj.paginator.num_pages }}.
+        </span>
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">بعدی</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}">آخرین &raquo;</a>
+        {% endif %}
+    </span>
+</div>
+    <div class="text-center mt-4">
+        <a href="{% url 'filemanager:user_list' %}" class="btn btn-warning">لیست کاربران</a>
+        <a href="{% url 'filemanager:admin_manage_photos' %}" class="btn btn-warning">حذف فایل</a>
+        <a href="{% url 'filemanager:logout' %}" class="btn btn-danger">خروج</a>
+    </div>
+</div>
+{% endblock %}

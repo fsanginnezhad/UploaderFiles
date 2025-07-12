@@ -1,0 +1,57 @@
+﻿{% extends "main.html" %}
+{% load static %}
+{% block title %}مدیریت فایل ها{% endblock %}
+{% block style %}
+    <link rel="stylesheet" href="{% static 'accounts/css/admin_manage_photos.css' %}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+{% endblock %}
+{% block content %}
+    <div class="container mt-5">
+        <h1 class="text-center">مدیریت فایل ها</h1>
+        {% if messages %}
+            <div class="alert alert-info">
+                {% for message in messages %}
+                    <p>{{ message }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+        <form method="get" action="{% url 'filemanager:admin_manage_photos' %}" class="form-inline justify-content-center mb-4">
+            <label for="user" class="mr-2">انتخاب یک کاربر:</label>
+            <select name="user" id="user" class="form-control" onchange="this.form.submit()">
+                <option value="">انتخاب کاربر</option>
+                {% for user in users %}
+                    <option value="{{ user }}" {% if user == selected_user %}selected{% endif %}>{{ user }}</option>
+                {% endfor %}
+            </select>
+        </form>
+        {% if selected_user %}
+            <h2 class="text-center">فایل از {{ selected_user }}</h2>
+            <form method="post" class="text-center">
+                {% csrf_token %}
+                <button type="submit" name="folder_to_delete" value="{{ selected_user }}" class="btn btn-danger mb-3" onclick="return confirm('Are you sure you want to delete all photos for {{ selected_user }}?')">حذف فولدر</button>
+                <button type="submit" class="btn btn-warning mb-3" onclick="return confirm('Are you sure you want to delete the selected photos?')">حذف فایل انتخاب شده</button>
+                <div class="row">
+                    {% for username, photos in selected_user_photos.items %}
+                        {% for photo in photos %}
+                            <div class="col-md-3 col-sm-6 mb-4">
+                                <div class="card">
+                                    <img src="{{ MEDIA_URL }}{{ username }}/{{ photo }}" class="card-img-top" alt="File">
+                                    <div class="card-body text-center">
+                                        <input type="checkbox" name="photos_to_delete" value="{{ username }}/{{ photo }}">
+                                    </div>
+                                </div>
+                                <div>{{ photo }}</div>
+                            </div>
+                        {% endfor %}
+                    {% endfor %}
+                </div>
+            </form>
+        {% else %}
+            <p class="text-center">انتخاب یک کاربر جهت مشاهده فایل های آن.</p>
+        {% endif %}
+        <div class="text-center mt-4">
+            <a href="{% url 'filemanager:logout' %}" class="btn btn-secondary">خروج</a>
+            <a href="{% url 'filemanager:admin_page' %}" class="btn btn-primary">برو به ساختن کاربر جدید</a>
+        </div>
+    </div>
+{% endblock %}

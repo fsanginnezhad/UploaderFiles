@@ -1,0 +1,32 @@
+{% extends 'main.html' %}
+{% load static %}
+{% block title %}
+    صفحه کاربر
+{% endblock %}
+{% block style %}
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="{% static 'cameraapp/css/user_page.css' %}" />
+{% endblock %}
+{% block content %}
+    <div class="container mt-5">
+        <div class="user-header">
+            <h1>خوش آمدید، {{ username }}</h1>
+        </div>
+        <div class="file-list">
+            <h2>فایل‌های شما</h2>
+            <ul>
+                {% for file in user_files %}
+                    <li>{{ file }}</li>
+                {% empty %}
+                    <p>هیچ فایلی در پوشه شما وجود ندارد.</p>
+                {% endfor %}
+            </ul>
+        </div>
+        <a href="{% url 'filemanager:logout' %}" class="logout-btn">خروج</a>
+    </div>
+{% endblock %}
+{% block script %}
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+{% endblock %}

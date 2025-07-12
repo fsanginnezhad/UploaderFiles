@@ -1,0 +1,52 @@
+body {
+    background: linear-gradient(to right, #6a11cb, #2575fc);
+    color: #fff;
+}
+
+.upload-card {
+    max-width: 600px;
+    margin: auto;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+    background: linear-gradient(to right, #2575fc, #6a11cb);
+    border-radius: 10px 10px 0 0;
+}
+
+.btn-success {
+    background: linear-gradient(to right, #28a745, #218838);
+    border: none;
+}
+
+.btn-success:hover {
+    background: linear-gradient(to right, #218838, #28a745);
+}
+
+.btn-outline-secondary {
+    border: 1px solid #ccc;
+    color: #fff;
+    border-radius: 5px;
+}
+
+.btn-outline-secondary:hover {
+    background-color: #2575fc;
+    border-color: #2575fc;
+}
+
+@media (max-width: 576px) {
+    .upload-card {
+        margin: 20px;
+    }
+
+    .d-flex {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .form-control {
+        font-size: 1rem;
+    }
+}

@@ -1,0 +1,124 @@
+﻿{% extends "main.html" %}
+{% load static %}
+{% block title %}آپلود فایل{% endblock %}
+{% block style %}
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'filemanager/css/file_upload.css' %}">
+{% endblock %}
+{% block content %}
+    <div class="container mt-5">
+        <div class="card upload-card">
+            <div class="card-header text-white text-center">
+                <h1 class="h4 mb-0">آپلود فایل</h1>
+            </div>
+            <div class="card-body">
+		<p style="color: green; text-align: center;">{{ user }} خوش آمدید</p>
+                {% if messages %}
+                    <div id="message-container" class="alert alert-info alert-dismissible fade show" role="alert">
+                        {% for message in messages %}
+                            <p>{{ message }}</p>
+                        {% endfor %}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="بستن"></button>
+                    </div>
+                {% endif %}
+                <form id="upload-form" method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="file" class="form-label">انتخاب فایل ها</label>
+                        <input type="file" class="form-control" name="file" id="file" multiple required>
+                        <div class="invalid-feedback">
+                            لطفا فایل ها را انتخاب کنید.
+                        </div>
+                        {% if user_re == 'ghavami' %}
+                            <small class="form-text text-muted">
+                                فرمت‌های مجاز: jpg، jpeg، png، pdf, xlsx
+                            </small>
+                        {% else %}
+                            <small class="form-text text-muted">
+                                فرمت‌های مجاز: jpg، jpeg، png، pdf
+                            </small>
+                        {% endif %}
+                    </div>
+                    <button type="submit" class="btn btn-success w-100">آپلود</button>
+                </form>
+                <div class="progress mt-3 d-none" id="progress-container">
+                    <div id="progress-bar" class="progress-bar progress-bar-striped bg-info" style="width: 0%">0%</div>
+                </div>
+            </div>
+        </div>
+        <div class="mt-4 d-flex justify-content-center gap-2">
+            <a href="{% url 'filemanager:logout' %}" class="btn btn-danger">خروج</a>
+        </div>
+    </div>
+{% endblock %}
+{% block script %}
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'filemanager/js/script.js' %}"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const form = document.getElementById("upload-form");
+            const input = document.getElementById("file");
+            const progressContainer = document.getElementById("progress-container");
+            const progressBar = document.getElementById("progress-bar");
+            const user = "{{ user_re }}";
+            function handleUpload(allowedExtensions){
+                function isValidFile(filename) {
+                    const ext = filename.split('.').pop().toLowerCase();
+                    return allowedExtensions.includes(ext);
+                }
+                form.addEventListener("submit", function (e) {
+                    e.preventDefault();
+                    const files = input.files;
+                    if (!files.length) {
+                        alert("هیچ فایلی انتخاب نشده است.");
+                        return;
+                    }
+                    const formData = new FormData();
+                    for (let i = 0; i < files.length; i++) {
+                        if (isValidFile(files[i].name)) {
+                            formData.append("file[]", files[i], files[i].name);
+                        }
+                    }
+                    const xhr = new XMLHttpRequest();
+                    xhr.open("POST", window.location.href);
+                    xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+                    xhr.setRequestHeader("X-CSRFToken", document.querySelector("[name=csrfmiddlewaretoken]").value);
+                    progressContainer.classList.remove("d-none");
+                    progressBar.style.width = "0%";
+                    progressBar.textContent = "0%";
+                    progressBar.className = "progress-bar progress-bar-striped bg-info";
+                    xhr.upload.addEventListener("progress", function (e) {
+                        if (e.lengthComputable) {
+                            const percent = Math.round((e.loaded / e.total) * 100);
+                            progressBar.style.width = percent + "%";
+                            progressBar.textContent = percent + "%";
+                        }
+                    });
+                    xhr.onload = function () {
+                        if (xhr.status === 200) {
+                            progressBar.classList.remove("bg-info");
+                            progressBar.classList.add("bg-success");
+                            progressBar.textContent = "آپلود با موفقیت انجام شد";
+                            setTimeout(() => window.location.reload(), 1000);
+                        } else {
+                            progressBar.classList.add("bg-danger");
+                            progressBar.textContent = "خطا در آپلود فایل";
+                        }
+                    };
+                    xhr.onerror = function () {
+                        progressBar.classList.add("bg-danger");
+                        progressBar.textContent = "خطای ارتباط با سرور";
+                    };
+                    xhr.send(formData);
+                });
+            }
+            if(user == 'ghavami'){
+                const allowedExtensions = ['jpg', 'jpeg', 'png', 'pdf', 'xlsx', 'xls', 'xlsm', 'xlsb', 'xltx', 'xlc'];
+                handleUpload(allowedExtensions)
+            } else {
+                const allowedExtensions = ['jpg', 'jpeg', 'png', 'pdf'];
+                handleUpload(allowedExtensions)
+            }
+        });
+    </script>
+{% endblock %}
